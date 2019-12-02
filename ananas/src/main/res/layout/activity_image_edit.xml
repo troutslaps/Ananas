@@ -1,6 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#000000"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -8,7 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="55dp"
         android:layout_alignParentTop="true"
-        android:background="#333333">
+        android:background="#66000000">
 
         <ImageView
             android:id="@+id/back_btn"
@@ -18,17 +19,6 @@
             android:layout_margin="10dp"
             android:layout_marginLeft="8dp"
             android:src="@drawable/back_arrow" />
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_toRightOf="@id/back_btn"
-            android:gravity="center"
-            android:text="@string/iamutkarshtiwari_github_io_ananas_library_name"
-            android:textColor="#ffffff"
-            android:textSize="20sp" />
 
         <ViewFlipper
             android:id="@+id/banner_flipper"
@@ -75,8 +65,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@id/bottom_gallery"
-        android:layout_below="@id/banner"
-        android:background="#000000">
+        android:layout_below="@id/banner">
 
         <iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.ImageViewTouch
             android:id="@+id/main_image"
@@ -101,7 +90,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
         </iamutkarshtiwari.github.io.ananas.editimage.layout.ZoomLayout>
 
@@ -148,9 +137,9 @@
         android:layout_above="@id/bottom_gallery"
         android:layout_alignParentRight="true"
         android:orientation="horizontal"
-        android:paddingBottom="16dp"
         android:paddingLeft="8dp"
-        android:paddingRight="10dp">
+        android:paddingRight="10dp"
+        android:paddingBottom="16dp">
 
         <ImageView
             android:id="@+id/undo_btn"
