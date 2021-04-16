@@ -74,9 +74,12 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     public static final int MODE_BRIGHTNESS = 8;
     public static final int MODE_SATURATION = 9;
 
-    private final String[] requiredPermissions = new String[]{
+    private final String[] requiredPermissions = android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.P
+                                                 ? new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
+    } : new String[]{
+            Manifest.permission.READ_EXTERNAL_STORAGE
     };
 
     public String sourceFilePath;
@@ -119,7 +122,8 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     public static void start(Activity activity, Intent intent, int requestCode) {
         if (TextUtils.isEmpty(intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH))) {
-            Toast.makeText(activity, R.string.iamutkarshtiwari_github_io_ananas_not_selected, Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, R.string.iamutkarshtiwari_github_io_ananas_not_selected, Toast.LENGTH_SHORT)
+                 .show();
             return;
         }
         activity.startActivityForResult(intent, requestCode);
@@ -158,7 +162,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     private void initView() {
         loadingDialog = BaseActivity.getLoadingDialog(this, R.string.iamutkarshtiwari_github_io_ananas_loading,
-                false);
+                                                      false);
 
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         imageWidth = metrics.widthPixels / 2;
@@ -293,7 +297,11 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                 } else {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
                     alertDialogBuilder.setMessage(R.string.iamutkarshtiwari_github_io_ananas_exit_without_save)
-                            .setCancelable(false).setPositiveButton(R.string.iamutkarshtiwari_github_io_ananas_confirm, (dialog, id) -> finish()).setNegativeButton(R.string.iamutkarshtiwari_github_io_ananas_cancel, (dialog, id) -> dialog.cancel());
+                                      .setCancelable(false)
+                                      .setPositiveButton(R.string.iamutkarshtiwari_github_io_ananas_confirm,
+                                                         (dialog, id) -> finish())
+                                      .setNegativeButton(R.string.iamutkarshtiwari_github_io_ananas_cancel,
+                                                         (dialog, id) -> dialog.cancel());
 
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
@@ -303,8 +311,9 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     }
 
     public void changeMainBitmap(Bitmap newBit, boolean needPushUndoStack) {
-        if (newBit == null)
+        if (newBit == null) {
             return;
+        }
 
         if (mainBitmap == null || mainBitmap != newBit) {
             if (needPushUndoStack) {
@@ -332,8 +341,9 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     }
 
     protected void doSaveImage() {
-        if (numberOfOperations <= 0)
+        if (numberOfOperations <= 0) {
             return;
+        }
 
         compositeDisposable.clear();
 
@@ -356,8 +366,9 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     private Single<Boolean> saveImage(Bitmap finalBitmap) {
         return Single.fromCallable(() -> {
-            if (TextUtils.isEmpty(outputFilePath))
+            if (TextUtils.isEmpty(outputFilePath)) {
                 return false;
+            }
 
             return BitmapUtils.saveBitmap(finalBitmap, outputFilePath);
         });
@@ -371,14 +382,15 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(subscriber -> loadingDialog.show())
                 .doFinally(() -> loadingDialog.dismiss())
-                .subscribe(processedBitmap -> changeMainBitmap(processedBitmap, false), e -> showToast(R.string.iamutkarshtiwari_github_io_ananas_load_error));
+                .subscribe(processedBitmap -> changeMainBitmap(processedBitmap, false),
+                           e -> showToast(R.string.iamutkarshtiwari_github_io_ananas_load_error));
 
         compositeDisposable.add(loadImageDisposable);
     }
 
     private Single<Bitmap> loadImage(String filePath) {
         return Single.fromCallable(() -> BitmapUtils.getSampledBitmap(filePath, imageWidth,
-                imageHeight));
+                                                                      imageHeight));
     }
 
     private void showToast(@StringRes int resId) {
@@ -401,7 +413,8 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     protected void setLockScreenOrientation(boolean lock) {
         if (Build.VERSION.SDK_INT >= 18) {
-            setRequestedOrientation(lock ? ActivityInfo.SCREEN_ORIENTATION_LOCKED : ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+            setRequestedOrientation(
+                    lock ? ActivityInfo.SCREEN_ORIENTATION_LOCKED : ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
             return;
         }
 
@@ -424,8 +437,9 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
                     break;
             }
-        } else
+        } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+        }
     }
 
     public void increaseOpTimes() {
